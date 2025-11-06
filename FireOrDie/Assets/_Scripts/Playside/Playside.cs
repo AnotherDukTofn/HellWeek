@@ -10,6 +10,7 @@ public class Playside : MonoBehaviour {
 
     [SerializeField] private Playside enemySide;
 
+    #region JustForDebug
     [SerializeField] private bool moveToMid;
     [SerializeField] private bool moveToTop;
     [SerializeField] private bool moveToBot;
@@ -30,6 +31,8 @@ public class Playside : MonoBehaviour {
             moveToBot = false;
         }
     }
+    
+    #endregion
 
     private void OnEnable() {
         allyUnit.OnFireToPosition += NotifyHit;

@@ -12,6 +12,8 @@ public class Unit : MonoBehaviour {
 
     public Action<int, float> OnFireToPosition;
 
+    #region JustForDebug
+
     [SerializeField] private bool fireToTop;
     [SerializeField] private bool fireToMid;
     [SerializeField] private bool fireToBot;
@@ -32,6 +34,8 @@ public class Unit : MonoBehaviour {
             fireToBot = false;
         }
     }
+    
+    #endregion
 
     private void Start() {
         currentHealth = maxHealth;
