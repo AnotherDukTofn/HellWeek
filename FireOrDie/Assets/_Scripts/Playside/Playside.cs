@@ -9,35 +9,19 @@ public class Playside : MonoBehaviour {
 
     [SerializeField] private Playside enemySide;
 
-    #region JustForDebug
-    [SerializeField] private bool moveToMid;
-    [SerializeField] private bool moveToTop;
-    [SerializeField] private bool moveToBot;
-
-    void Update() {
-        if (moveToMid) {
-            MoveUnit(1);
-            moveToMid = false;
-        }
-
-        if (moveToTop) {
-            MoveUnit(0);
-            moveToTop = false;
-        }
-
-        if (moveToBot) {
-            MoveUnit(2);
-            moveToBot = false;
-        }
+    private void OnEnable() {
+        allyUnit.OnFire += NotifyHit;
     }
-    
-    #endregion
+
+    private void OnDisable() {
+        allyUnit.OnFire -= NotifyHit;
+    }
 
     private void Start() {
         MoveUnit(1);
     }
 
-    public void NotifyHit(int target, float damage) {
+    public void NotifyHit(float damage, int target) {
         Debug.Log($"{this.gameObject.name} notified hit ({target}, {damage})");
         enemySide.HandleEnemyFire(target, damage);
     }
@@ -78,7 +62,7 @@ public class Playside : MonoBehaviour {
         
         Cells[pos].SetOccupied(true);
         
-        // Sự kiện hoàn thành hành động
+        // GỌI CALLBACK SAU KHI MOVEMENT HOÀN THÀNH
         onComplete?.Invoke();
     }
 }

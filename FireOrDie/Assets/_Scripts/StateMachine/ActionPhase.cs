@@ -10,5 +10,8 @@ public class ActionPhase : IState {
     }
 
     public void Execute() { }
-    public void Exit() {}
+
+    public void Exit() {
+        _turnManager.CheckTurnLimit();
+    }
 }

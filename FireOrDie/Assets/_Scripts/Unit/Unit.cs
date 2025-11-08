@@ -12,39 +12,20 @@ public class Unit : MonoBehaviour {
     [Header("Weapon")]
     [SerializeField] private WeaponDataSO currentWeapon;
     private Weapon _weapon;
-
-    #region JustForDebug
-
-    [SerializeField] private bool fireToTop;
-    [SerializeField] private bool fireToMid;
-    [SerializeField] private bool fireToBot;
-
-    void Update() {
-        if (fireToTop) {
-            FireTo(0);
-            fireToTop = false;
-        }
-
-        if (fireToMid) {
-            FireTo(1);
-            fireToMid = false;
-        }
-
-        if (fireToBot) {
-            FireTo(2);
-            fireToBot = false;
-        }
-    }
     
-    #endregion
+    public event Action OnDie;
+    public event Action<float, int> OnFire;
+    public event Action<float> OnHit;
 
+    
     private void Start() {
         currentHealth = maxHealth;
         _weapon = new Weapon(currentWeapon);
+g\h
     }
-
+        currentHealth -= damage;g\
     public void TakeDamage(float damage) {
-        currentHealth -= damage;
+        OnHit?.Invoke(damage);
         Debug.Log($"{this.gameObject.name} damaged with {damage} damage");
         if (currentHealth <= 0) {
             currentHealth = 0;
@@ -54,11 +35,9 @@ public class Unit : MonoBehaviour {
 
     public void FireTo(int target, Action onComplete = null) {
         _weapon.Fire();
-        allySide.NotifyHit(target, currentWeapon.damage);
+        OnFire?.Invoke(currentWeapon.damage, target);
         Debug.Log($"{this.gameObject.name} fire to {target}");
         
-        // Fire là instant action, gọi callback ngay
-        // Nếu có animation thì đợi animation xong mới gọi
         onComplete?.Invoke();
     }
 
@@ -67,12 +46,12 @@ public class Unit : MonoBehaviour {
     }
 
     public void DodgeTo(int position, Action onComplete = null) {
-        // Pass callback xuống Playside để gọi sau khi movement xong
         allySide.MoveUnit(position, onComplete);
     }
 
     private void Die() {
         Debug.Log($"{name} has died.");
         this.gameObject.SetActive(false);
+        OnDie?.Invoke();
     }
 }

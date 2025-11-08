@@ -187,9 +187,6 @@ MonoBehaviour:
   allyUnit: {fileID: 660887959}
   moveSpeed: 7.5
   enemySide: {fileID: 2030525885}
-  moveToMid: 0
-  moveToTop: 0
-  moveToBot: 0
 --- !u!1 &142011845
 GameObject:
   m_ObjectHideFlags: 0
@@ -463,9 +460,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   choosingManager: {fileID: 249284356}
-  playerSide: {fileID: 89708346}
   actionPanel: {fileID: 286474824}
   targetPanel: {fileID: 293863427}
+  playerSide: {fileID: 89708346}
   movePanelTime: 0.5
   moveDownPos: -175
   moveUpPos: 0
@@ -1093,7 +1090,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_Unit
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7761772402675614647, guid: 183428323ea7b5e459a16e6f3d40a5c3, type: 3}
+      propertyPath: allyUnit
+      value: 
+      objectReference: {fileID: 2136166912}
+    m_RemovedComponents:
+    - {fileID: 6353686774132747638, guid: 183428323ea7b5e459a16e6f3d40a5c3, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -1217,9 +1219,21 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   currentWeapon: {fileID: 11400000, guid: a38844fb4e253ed40ba665e6e58fb6bf, type: 2}
-  fireToTop: 0
-  fireToMid: 0
-  fireToBot: 0
+--- !u!114 &660887960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 660887957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da041a37cda069741bcd579137781668, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageTaken: 0
+  damageDealt: 0
+  allyUnit: {fileID: 660887959}
 --- !u!1001 &683607102
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1367,7 +1381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acf656921c506f94eaa2c405d3418296, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  choice: 2
+  choice: 3
   choosingManager: {fileID: 249284356}
   choosingUI: {fileID: 249284357}
 --- !u!1001 &771159349
@@ -1975,7 +1989,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acf656921c506f94eaa2c405d3418296, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  choice: 1
+  choice: 2
   choosingManager: {fileID: 249284356}
   choosingUI: {fileID: 249284357}
 --- !u!1001 &1794630827
@@ -2331,9 +2345,6 @@ MonoBehaviour:
   allyUnit: {fileID: 2136166912}
   moveSpeed: 3
   enemySide: {fileID: 89708346}
-  moveToMid: 0
-  moveToTop: 0
-  moveToBot: 0
 --- !u!1 &2075796750
 GameObject:
   m_ObjectHideFlags: 0
@@ -2393,9 +2404,6 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   currentWeapon: {fileID: 11400000, guid: a38844fb4e253ed40ba665e6e58fb6bf, type: 2}
-  fireToTop: 0
-  fireToMid: 0
-  fireToBot: 0
 --- !u!1001 &3046105592280085255
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2448,13 +2456,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player_Unit
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7761772402675614647, guid: 183428323ea7b5e459a16e6f3d40a5c3, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5429692641331720242, guid: 183428323ea7b5e459a16e6f3d40a5c3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 660887959}
+    - targetCorrespondingSourceObject: {fileID: 5429692641331720242, guid: 183428323ea7b5e459a16e6f3d40a5c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 660887960}
   m_SourcePrefab: {fileID: 100100000, guid: 183428323ea7b5e459a16e6f3d40a5c3, type: 3}
 --- !u!1001 &3437426617040400836
 PrefabInstance:
@@ -2606,7 +2618,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acf656921c506f94eaa2c405d3418296, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  choice: 0
+  choice: 1
   choosingManager: {fileID: 249284356}
   choosingUI: {fileID: 249284357}
 --- !u!224 &4868616745256970103 stripped

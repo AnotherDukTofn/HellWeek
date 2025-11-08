@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 244947876648240875}
+  - component: {fileID: 6353686774132747638}
+  - component: {fileID: 7761772402675614647}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -32,6 +34,37 @@ Transform:
   - {fileID: 8057721634072656301}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6353686774132747638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5429692641331720242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4405a6c80e99f444995de34333ddba09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allySide: {fileID: 0}
+  maxHealth: 0
+  currentHealth: 0
+  currentWeapon: {fileID: 0}
+--- !u!114 &7761772402675614647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5429692641331720242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da041a37cda069741bcd579137781668, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageTaken: 0
+  damageDealt: 0
+  allyUnit: {fileID: 6353686774132747638}
 --- !u!1 &5944475515096145441
 GameObject:
   m_ObjectHideFlags: 0
