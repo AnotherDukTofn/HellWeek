@@ -1,10 +1,9 @@
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Playside : MonoBehaviour {
-    [SerializeField] private Cell[] cells;
+    [field: SerializeField] public Cell[] Cells { get; private set; }
     [SerializeField] private Unit allyUnit;
     [SerializeField] private float moveSpeed = 3f;
 
@@ -34,25 +33,17 @@ public class Playside : MonoBehaviour {
     
     #endregion
 
-    private void OnEnable() {
-        allyUnit.OnFireToPosition += NotifyHit;
-    }
-
-    private void OnDisable() {
-        allyUnit.OnFireToPosition -= NotifyHit;
-    }
-
     private void Start() {
         MoveUnit(1);
     }
 
-    void NotifyHit(int target, float damage) {
+    public void NotifyHit(int target, float damage) {
         Debug.Log($"{this.gameObject.name} notified hit ({target}, {damage})");
         enemySide.HandleEnemyFire(target, damage);
     }
 
     public bool CheckUnitHit(int position) {
-        return cells[position].IsOccupied();
+        return Cells[position].IsOccupied();
     }
 
     public void HandleEnemyFire(int position, float damage) {
@@ -63,29 +54,31 @@ public class Playside : MonoBehaviour {
         }
     }
 
-    public void MoveUnit(int pos) {
+    public void MoveUnit(int pos, Action onComplete = null) {
         StopAllCoroutines();
-        StartCoroutine(MoveUnitRoutine(pos));
+        StartCoroutine(MoveUnitRoutine(pos, onComplete));
         Debug.Log($"{allyUnit.name} moved to cell[{pos}]");
-
     }
 
-    IEnumerator MoveUnitRoutine(int pos) {
-        while (Vector3.Distance(allyUnit.transform.position, cells[pos].transform.position) >= 0.01f) {
+    IEnumerator MoveUnitRoutine(int pos, Action onComplete = null) {
+        while (Vector3.Distance(allyUnit.transform.position, Cells[pos].transform.position) >= 0.01f) {
             allyUnit.transform.position = Vector3.MoveTowards(
                 allyUnit.transform.position, 
-                cells[pos].transform.position, 
+                Cells[pos].transform.position, 
                 moveSpeed * Time.deltaTime);
             
             yield return null;
         }
         
-        allyUnit.transform.position = cells[pos].transform.position;
+        allyUnit.transform.position = Cells[pos].transform.position;
         
-        foreach (Cell cell in cells) {
+        foreach (Cell cell in Cells) {
             cell.SetOccupied(false);    
         }
         
-        cells[pos].SetOccupied(true);
+        Cells[pos].SetOccupied(true);
+        
+        // Sự kiện hoàn thành hành động
+        onComplete?.Invoke();
     }
 }

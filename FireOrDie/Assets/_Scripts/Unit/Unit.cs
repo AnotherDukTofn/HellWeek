@@ -2,15 +2,16 @@ using System;
 using UnityEngine;
 
 public class Unit : MonoBehaviour {
-    [Header("Health")]
-    [SerializeField] private float maxHealth = 100f;
+    [Header("References")] 
+    [SerializeField] private Playside allySide;
+    
+    [Header("Stats")]
+    [SerializeField] private float maxHealth;
     [SerializeField] private float currentHealth;
 
     [Header("Weapon")]
-    [SerializeField] private WeaponDataSO _currentWeapon;
-    private Weapon weapon;
-
-    public Action<int, float> OnFireToPosition;
+    [SerializeField] private WeaponDataSO currentWeapon;
+    private Weapon _weapon;
 
     #region JustForDebug
 
@@ -39,7 +40,7 @@ public class Unit : MonoBehaviour {
 
     private void Start() {
         currentHealth = maxHealth;
-        weapon = new Weapon(_currentWeapon);
+        _weapon = new Weapon(currentWeapon);
     }
 
     public void TakeDamage(float damage) {
@@ -51,22 +52,27 @@ public class Unit : MonoBehaviour {
         }
     }
 
-    public void FireTo(int position) {
-        weapon.Fire();
-        OnFireToPosition?.Invoke(position, _currentWeapon.damage); 
-        Debug.Log($"{this.gameObject.name} fire to {position}");
+    public void FireTo(int target, Action onComplete = null) {
+        _weapon.Fire();
+        allySide.NotifyHit(target, currentWeapon.damage);
+        Debug.Log($"{this.gameObject.name} fire to {target}");
+        
+        // Fire là instant action, gọi callback ngay
+        // Nếu có animation thì đợi animation xong mới gọi
+        onComplete?.Invoke();
     }
 
     public void Reload() {
-        weapon.Reload();
+        _weapon.Reload();
     }
 
-    public void DodgeTo(int position, Playside allySide) {
-        allySide.MoveUnit(position);
+    public void DodgeTo(int position, Action onComplete = null) {
+        // Pass callback xuống Playside để gọi sau khi movement xong
+        allySide.MoveUnit(position, onComplete);
     }
 
     private void Die() {
         Debug.Log($"{name} has died.");
-        Destroy(gameObject);
+        this.gameObject.SetActive(false);
     }
 }
