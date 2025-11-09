@@ -22,16 +22,15 @@ public class Playside : MonoBehaviour {
     }
 
     public void NotifyHit(float damage, int target) {
-        Debug.Log($"{this.gameObject.name} notified hit ({target}, {damage})");
         enemySide.HandleEnemyFire(target, damage);
     }
 
     public bool CheckUnitHit(int position) {
+        Cells[position].Hit();
         return Cells[position].IsOccupied();
     }
 
     public void HandleEnemyFire(int position, float damage) {
-        Debug.Log($"HandleEnemyFire of {this.gameObject.name} is called");
         if (CheckUnitHit(position)) {
             Debug.Log(allyUnit.name + " is hit, take " + damage + " damage.");
             allyUnit.TakeDamage(damage);
@@ -41,28 +40,28 @@ public class Playside : MonoBehaviour {
     public void MoveUnit(int pos, Action onComplete = null) {
         StopAllCoroutines();
         StartCoroutine(MoveUnitRoutine(pos, onComplete));
-        Debug.Log($"{allyUnit.name} moved to cell[{pos}]");
     }
 
     IEnumerator MoveUnitRoutine(int pos, Action onComplete = null) {
+        foreach (Cell cell in Cells) {
+            cell.SetOccupied(false);    
+        }
+        Cells[pos].SetOccupied(true);
+    
         while (Vector3.Distance(allyUnit.transform.position, Cells[pos].transform.position) >= 0.01f) {
             allyUnit.transform.position = Vector3.MoveTowards(
                 allyUnit.transform.position, 
                 Cells[pos].transform.position, 
                 moveSpeed * Time.deltaTime);
-            
+        
             yield return null;
         }
-        
+    
         allyUnit.transform.position = Cells[pos].transform.position;
-        
-        foreach (Cell cell in Cells) {
-            cell.SetOccupied(false);    
-        }
-        
-        Cells[pos].SetOccupied(true);
-        
-        // GỌI CALLBACK SAU KHI MOVEMENT HOÀN THÀNH
         onComplete?.Invoke();
+    }
+    
+    public Unit GetAllyUnit() {
+        return allyUnit;
     }
 }

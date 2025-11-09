@@ -1,17 +1,19 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Unit : MonoBehaviour {
     [Header("References")] 
     [SerializeField] private Playside allySide;
     
-    [Header("Stats")]
-    [SerializeField] private float maxHealth;
-    [SerializeField] private float currentHealth;
+    [Header("Statuss")]
+    [field: SerializeField] public float MaxHealth { get; private set; }
+    [field: SerializeField] public float CurrentHealth { get; private set; }
+    public bool IsDead => CurrentHealth <= 0;
 
     [Header("Weapon")]
     [SerializeField] private WeaponDataSO currentWeapon;
-    private Weapon _weapon;
+    public Weapon weapon;
     
     public event Action OnDie;
     public event Action<float, int> OnFire;
@@ -19,30 +21,31 @@ public class Unit : MonoBehaviour {
 
     
     private void Start() {
-        currentHealth = maxHealth;
-        _weapon = new Weapon(currentWeapon);
-g\h
+        CurrentHealth = MaxHealth;
+        weapon = new Weapon(currentWeapon);
+        weapon.Init();
     }
-        currentHealth -= damage;g\
+        
     public void TakeDamage(float damage) {
+        CurrentHealth -= damage;
         OnHit?.Invoke(damage);
-        Debug.Log($"{this.gameObject.name} damaged with {damage} damage");
-        if (currentHealth <= 0) {
-            currentHealth = 0;
+        if (CurrentHealth <= 0) {
+            CurrentHealth = 0;
             Die();
         }
     }
 
     public void FireTo(int target, Action onComplete = null) {
-        _weapon.Fire();
+        weapon.Fire();
         OnFire?.Invoke(currentWeapon.damage, target);
-        Debug.Log($"{this.gameObject.name} fire to {target}");
-        
-        onComplete?.Invoke();
+        StopAllCoroutines();
+        StartCoroutine(WaitForAnimation(onComplete));
     }
 
-    public void Reload() {
-        _weapon.Reload();
+    public void Reload(Action onComplete = null) {
+        weapon.Reload();
+        StopAllCoroutines();
+        StartCoroutine(WaitForAnimation(onComplete));
     }
 
     public void DodgeTo(int position, Action onComplete = null) {
@@ -53,5 +56,10 @@ g\h
         Debug.Log($"{name} has died.");
         this.gameObject.SetActive(false);
         OnDie?.Invoke();
+    }
+    
+    private IEnumerator WaitForAnimation(Action onComplete) {
+        yield return new WaitForSeconds(1f);
+        onComplete?.Invoke();
     }
 }

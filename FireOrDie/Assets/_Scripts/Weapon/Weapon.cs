@@ -6,6 +6,7 @@ public class Weapon {
     private int _currentAmmo;
     
     public int GetCurrentAmmo() => _currentAmmo;
+    public int GetMaxAmmo() => _weaponData.maxAmmo;
 
     public Weapon(WeaponDataSO weaponData) {
         _weaponData = weaponData;
@@ -17,5 +18,9 @@ public class Weapon {
 
     public void Reload() {
         _currentAmmo += _weaponData.reloadAmount;
+    }
+
+    public void Init() {
+        _currentAmmo = _weaponData.maxAmmo;
     }
 }

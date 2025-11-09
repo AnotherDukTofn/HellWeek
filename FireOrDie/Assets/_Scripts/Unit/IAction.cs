@@ -14,7 +14,6 @@ public class FireAction : IAction {
     }
 
     public void Execute(Action onComplete = null) {
-        // Pass callback xuống Unit
         _self.FireTo(_target, onComplete);
     }
 }
@@ -42,8 +41,6 @@ public class ReloadAction : IAction {
     }
 
     public void Execute(Action onComplete = null) {
-        // Reload instant nên gọi callback ngay
-        _self.Reload();
-        onComplete?.Invoke();
+        _self.Reload(onComplete);
     }
 }

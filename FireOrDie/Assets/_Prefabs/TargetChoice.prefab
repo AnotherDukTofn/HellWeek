@@ -135,8 +135,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f26165d740ef475ab365f608af674c31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  choice: 0
+  <Choice>k__BackingField: 0
   choosingManager: {fileID: 0}
+  image: {fileID: 4516666058332208203}
+  selectedColor: {r: 0.81886786, g: 0.81886786, b: 0.81886786, a: 1}
 --- !u!1 &3622697008573016830
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,12 +5,13 @@ public class TurnManager : MonoBehaviour {
     [Header("Turn Manager")]
     private StateMachine _stateMachine;
     [SerializeField] private string currentPhase;
-    private int _currentTurn;
-    private int _turnLimit;
+    [SerializeField] private int currentTurn;
+    [SerializeField] private int turnLimit;
     
     
     [Header("Choosing Settings")]
-    [SerializeField] private ChoosingManager choosingManager;
+    [SerializeField] private ChoosingManager playerChoosingManager;
+    [SerializeField] private ChoosingManager enemyChoosingManager;
     [SerializeField] private ChoosingUI choosingUI;
     [field: SerializeField] public float ChoosingDuration { get; private set; }
     public float choosingTimer;
@@ -18,23 +19,49 @@ public class TurnManager : MonoBehaviour {
     [Header("Unit Actions")]
     private IAction _playerAction;
     private IAction _enemyAction;
-    public bool actionExecuted;
+    [field: SerializeField] public EnemyAI Enemy { get; private set; }
+    public bool playerActionExecuted;
+    public bool enemyActionExecuted;
 
-    public event Action onTurnLimit;
+    public event Action OnTurnLimit;
 
     public void ActionExecute() {
-        _playerAction = choosingManager.ResolveAction();
-        actionExecuted = false;
+        _playerAction = playerChoosingManager.ResolveAction();
+        _enemyAction = enemyChoosingManager.ResolveAction();
 
-        _playerAction.Execute(() => {
-            Debug.Log("Player action completed!");
-            actionExecuted = true;
-        });
-        choosingManager.ResetAction();
+        playerActionExecuted = false;
+        enemyActionExecuted  = false;
+
+        bool playerDodges = _playerAction is DodgeAction;
+        bool enemyDodges  = _enemyAction  is DodgeAction;
+
+        if (playerDodges) {
+            _playerAction.Execute(() => { playerActionExecuted = true; });
+        }
+
+        if (enemyDodges) {
+            _enemyAction.Execute(() => { enemyActionExecuted = true; });
+        }
+
+        if (!playerDodges) {
+            _playerAction.Execute(() => { playerActionExecuted = true; });
+        }
+
+        if (!enemyDodges) {
+            _enemyAction.Execute(() => { enemyActionExecuted = true; });
+        }
+
+        playerChoosingManager.ResetAction();
+        Debug.Log($"Enemy {enemyChoosingManager.actionType}");
     }
 
+
     public void CheckTurnLimit() {
-        if (_currentTurn > _turnLimit) onTurnLimit?.Invoke();
+        if (currentTurn >= turnLimit) {
+            OnTurnLimit?.Invoke();
+            Debug.Log("Turn limit Invoked");
+        }
+        else currentTurn++;
     }
     
     public IAction GetPlayerAction() => _playerAction;
@@ -42,7 +69,7 @@ public class TurnManager : MonoBehaviour {
 
     void Start() {
         Init();
-        _currentTurn = 1;
+        currentTurn = 1;
     }
 
     void Update() {
@@ -57,13 +84,13 @@ public class TurnManager : MonoBehaviour {
         ActionPhase action = new ActionPhase(this);
         
         _stateMachine.AddTransition(choosing, action, () => choosingTimer == 0);
-        _stateMachine.AddTransition(action, choosing, () => actionExecuted);
+        _stateMachine.AddTransition(action, choosing, () => playerActionExecuted && enemyActionExecuted);
         
         _stateMachine.SetState(choosing);
     }
 
     public void StartChoosing() {
-        actionExecuted = false;
+        playerActionExecuted = false;
         choosingUI.NavigateToActionPanel();
     }
 

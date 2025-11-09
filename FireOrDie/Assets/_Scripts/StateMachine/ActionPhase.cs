@@ -7,6 +7,7 @@ public class ActionPhase : IState {
 
     public void Enter() {
         _turnManager.ActionExecute();
+        _turnManager.CompleteChoosing();
     }
 
     public void Execute() { }

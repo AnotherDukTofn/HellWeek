@@ -10,6 +10,7 @@ public class ChoosingPhase : IState {
     public void Enter() {
         _turnManager.StartChoosing();
         _turnManager.choosingTimer = _turnManager.ChoosingDuration;
+        _turnManager.Enemy.MakeDecision();
     }
 
     public void Execute() {

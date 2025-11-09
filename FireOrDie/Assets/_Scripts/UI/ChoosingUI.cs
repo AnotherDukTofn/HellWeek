@@ -1,11 +1,16 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class ChoosingUI : MonoBehaviour {
     [Header("References")]
-    [SerializeField] private ChoosingManager choosingManager;
+    [SerializeField] private ChoosingManager playerChoosingManager;
     [SerializeField] private RectTransform actionPanel;
     [SerializeField] private RectTransform targetPanel;
+    [SerializeField] private GameObject[] actionChoices = new GameObject[3];
+    [SerializeField] private GameObject[] targetChoices = new GameObject[3];
+    
     [SerializeField] private Playside playerSide;
     
     [Header("Move Panel Settings")]
@@ -17,6 +22,16 @@ public class ChoosingUI : MonoBehaviour {
     private Coroutine _actionPanelCoroutine;
     private Coroutine _targetPanelCoroutine;
 
+    void Start() {
+        for (int i = 0; i < actionChoices.Length; i++) {
+            actionChoices[i] = actionPanel.GetChild(i).gameObject;
+        }
+
+        for (int i = 0; i < targetChoices.Length; i++) {
+            targetChoices[i] = targetPanel.GetChild(i).gameObject;
+        }
+    }
+
     public void NavigateToTargetPanel() {
         ResetTargetPanel();
         MovePanel(actionPanel, moveDownPos, ref _actionPanelCoroutine);
@@ -24,6 +39,7 @@ public class ChoosingUI : MonoBehaviour {
     }
 
     public void NavigateToActionPanel() {
+        ResetActionPanel();
         MovePanel(targetPanel, moveDownPos, ref _targetPanelCoroutine);
         MovePanel(actionPanel, moveUpPos, ref _actionPanelCoroutine);
     }
@@ -34,18 +50,33 @@ public class ChoosingUI : MonoBehaviour {
     }
 
     public void ResetTargetPanel() {
-        if (choosingManager.actionType == ChoosingManager.ActionType.Dodge) {
+        targetPanel.gameObject.SetActive(true);
+        foreach (GameObject child in targetChoices) {
+            child.gameObject.GetComponent<TargetChoice>().ResetColor();
+        }
+        
+        if (playerChoosingManager.actionType == ChoosingManager.ActionType.Dodge) {
             for (int i = 0; i < targetPanel.transform.childCount; i++) {
-                var targetChoice = targetPanel.transform.GetChild(i).gameObject;
                 bool occupied = playerSide.Cells[i].IsOccupied();
-                targetChoice.SetActive(!occupied);
+                targetChoices[i].SetActive(!occupied);
             }
+        }
+        else if (playerChoosingManager.actionType == ChoosingManager.ActionType.Reload) {
+            targetPanel.gameObject.SetActive(false);
         }
         else {
             foreach (Transform child in targetPanel.transform) {
                 child.gameObject.SetActive(true);
             }
         }
+    }
+
+    public void ResetActionPanel() {
+        int currentAmmo = playerSide.GetAllyUnit().weapon.GetCurrentAmmo();
+        int maxAmmo = playerSide.GetAllyUnit().weapon.GetMaxAmmo();
+        
+        actionChoices[0].SetActive(currentAmmo > 0);
+        actionChoices[2].SetActive(currentAmmo < maxAmmo);
     }
 
     private void MovePanel(RectTransform panel, float target, ref Coroutine panelCoroutine) {

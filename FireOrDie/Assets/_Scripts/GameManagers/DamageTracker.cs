@@ -1,29 +1,27 @@
 using UnityEngine;
 
 public class DamageTracker : MonoBehaviour {
-    [SerializeField] private float damageTaken;
-    [SerializeField] private float damageDealt;
+    [field: SerializeField] public float PlayerDamageTaken { get; private set; }
+    [field: SerializeField] public float PlayerDamageDealt { get; private set; }
     
-    [SerializeField] private Unit allyUnit;
+    
+    [SerializeField] private Unit playerUnit;
 
     void OnEnable() {
-        allyUnit.OnFire += TrackDamageDealt;
-        allyUnit.OnHit += TrackDamageTaken;
+        playerUnit.OnFire += TrackPlayerDamageDealt;
+        playerUnit.OnHit += TrackPlayerDamageTaken;
     }
 
     void OnDisable() {
-        allyUnit.OnFire -= TrackDamageDealt;
-        allyUnit.OnHit -= TrackDamageTaken;
+        playerUnit.OnFire -= TrackPlayerDamageDealt;
+        playerUnit.OnHit -= TrackPlayerDamageTaken;
     }
 
-    private void TrackDamageDealt(float damage, int target) {
-        damageDealt += damage;
+    private void TrackPlayerDamageDealt(float damage, int target) {
+        PlayerDamageDealt += damage;
     }
 
-    private void TrackDamageTaken(float damage) {
-        damageTaken += damage;
+    private void TrackPlayerDamageTaken(float damage) {
+        PlayerDamageTaken += damage;
     }
-    
-    public float GetDamageDealt() => damageDealt;
-    public float GetDamageTaken() => damageTaken;
 }
